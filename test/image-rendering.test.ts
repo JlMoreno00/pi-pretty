@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 import { afterEach, describe, expect, it } from "vitest";
 
 import { registerReadTool } from "../src/tools/read.js";
@@ -53,9 +55,9 @@ afterEach(() => {
 });
 
 describe("read image presentation ownership", () => {
-	it("does not expose private image internals from the package entry", async () => {
-		const entry = await import("../src/index.js");
-		expect("__imageInternals" in entry).toBe(false);
+	it("does not export private image internals from the source entry", () => {
+		const entrySource = readFileSync(new URL("../src/index.ts", import.meta.url), "utf8");
+		expect(entrySource).not.toMatch(/\b__imageInternals\b/);
 	});
 
 	it("preserves ordered image blocks while keeping payload out of details", async () => {
