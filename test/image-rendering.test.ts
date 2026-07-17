@@ -53,6 +53,11 @@ afterEach(() => {
 });
 
 describe("read image presentation ownership", () => {
+	it("does not expose private image internals from the package entry", async () => {
+		const entry = await import("../src/index.js");
+		expect("__imageInternals" in entry).toBe(false);
+	});
+
 	it("preserves ordered image blocks while keeping payload out of details", async () => {
 		const content: ToolContent[] = [
 			{ type: "image", data: "first", mimeType: "image/png" },
